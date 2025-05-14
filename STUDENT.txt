@@ -1,0 +1,2 @@
+APP_URL=<https://github.com/solihunsir/web_intermediate.git>
+MAP_SERVICE_API_KEY=<api_key>
