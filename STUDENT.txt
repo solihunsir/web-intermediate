@@ -1,2 +1,2 @@
-APP_URL=<https://github.com/solihunsir/web_intermediate.git>
+APP_URL=<https://webintermediate.netlify.app/>
 MAP_SERVICE_API_KEY=<api_key>

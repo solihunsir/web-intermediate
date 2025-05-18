@@ -2,7 +2,7 @@ import AddPagePresenter from "./add-page-presenter";
 import * as StoriesAPI from "../../data/api";
 import Map from "../../utils/map";
 import Camera from "../../utils/camera";
-import { convertBase64ToBlob } from "../../utils";
+import { convertBase64ToBlob } from "../../utils"; // Pastikan impor benar
 import { generateLoaderAbsoluteTemplate } from "../../template";
 
 export default class AddPage {
@@ -15,85 +15,78 @@ export default class AddPage {
 
   async render() {
     return `
-            
-            
-            <section class="container">
-                <div class="new-form__container">
-                    <form id="new-form" class="new-form">
-                        <div class="form-control">
-                          <label for="image-input" class="new-form__image__title"></label>
-                          <div id="image-more-info">Tambahkan foto</div>
-            
-                          <div class="new-form__image__container">
-                            <div class="new-form__image__buttons">
-                              <button id="image-input-button" class="btn btn-outline" type="button">Ambil Gambar</button>
-                              <input
-                                id="image-input"
-                                class="new-form__image__input"
-                                name="image"
-                                type="file"
-                                accept="image/*"
-                                aria-describedby="image-more-info"
-                              >
-                              <button id="open-image-camera-button" class="btn btn-outline" type="button">
-                                Buka Kamera
-                              </button>
-                            </div>
-                            <div id="camera-container" class="new-form__camera__container">
-                              <video id="camera-video" class="new-form__camera__video">
-                                video stream not available.
-                              </video>
-            
-                              <canvas id="camera-canvas" class="new-form__camera__canvas"></canvas>
-            
-                              <div class="new-form__camera__tools">
-                                <select id="camera-select"></select>
-                                <div class="new-form__camera__tools_buttons">
-                                  <button id="camera-take-button" class="btn" type="button">
-                                    Ambil Gambar
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                            <ul id="image-taken" class="new-form__image__outputs"></ul>
-                          </div>
-                        </div>
-                    
-                        <div class="form-control">
-                            <label for="description-input" class="new-form__description__title"></label>
-                        
-                            <div class="new-form__description__container">
-                                <textarea
-                                  id="description-input"
-                                  name="description"
-                                  placeholder="Masukkan deskripsi"
-                                ></textarea>
-                            </div>
-                        </div>
-                        <div class="form-control">
-                          <div class="new-form__location__title">Lokasi</div>
-            
-                          <div class="new-form__location__container">
-                            <div class="new-form__location__map__container">
-                              <div id="map" class="new-form__location__map"></div>
-                              <div id="map-loading-container"></div>
-                            </div>
-                            <div class="new-form__location__lat-lng">
-                              <input type="number" name="lat" value="-6.175389" disabled>
-                              <input type="number" name="lon" value="106.827139" disabled>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="form-buttons">
-                          <span id="submit-button-container">
-                            <button class="btn" type="submit">Tambah Laporan</button>
-                          </span>
-                          <a class="btn btn-outline" href="#/">Batal</a>
-                        </div>
-                    </form>
+      <section class="container">
+        <div class="new-form__container">
+          <form id="new-form" class="new-form">
+            <div class="form-control">
+              <label for="image-input" class="new-form__image__title"></label>
+              <div id="image-more-info">Tambahkan foto</div>
+              <div class="new-form__image__container">
+                <div class="new-form__image__buttons">
+                  <button id="image-input-button" class="btn btn-outline" type="button">Ambil Gambar</button>
+                  <input
+                    id="image-input"
+                    class="new-form__image__input"
+                    name="image"
+                    type="file"
+                    accept="image/*"
+                    aria-describedby="image-more-info"
+                  >
+                  <button id="open-image-camera-button" class="btn btn-outline" type="button">
+                    Buka Kamera
+                  </button>
                 </div>
-            </section>
-        `;
+                <div id="camera-container" class="new-form__camera__container">
+                  <video id="camera-video" class="new-form__camera__video">
+                    video stream not available.
+                  </video>
+                  <canvas id="camera-canvas" class="new-form__camera__canvas"></canvas>
+                  <div class="new-form__camera__tools">
+                    <select id="camera-select"></select>
+                    <div class="new-form__camera__tools_buttons">
+                      <button id="camera-take-button" class="btn" type="button">
+                        Ambil Gambar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <ul id="image-taken" class="new-form__image__outputs"></ul>
+              </div>
+            </div>
+
+            <div class="form-control">
+              <label for="description-input" class="new-form__description__title"></label>
+              <div class="new-form__description__container">
+                <textarea
+                  id="description-input"
+                  name="description"
+                  placeholder="Masukkan deskripsi"
+                ></textarea>
+              </div>
+            </div>
+            <div class="form-control">
+              <div class="new-form__location__title">Lokasi</div>
+              <div class="new-form__location__container">
+                <div class="new-form__location__map__container">
+                  <div id="map" class="new-form__location__map"></div>
+                  <div id="map-loading-container"></div>
+                </div>
+                <div class="new-form__location__lat-lng">
+                  <input type="number" name="lat" value="-6.175389" disabled>
+                  <input type="number" name="lon" value="106.827139" disabled>
+                </div>
+              </div>
+            </div>
+            <div class="form-buttons">
+              <span id="submit-button-container">
+                <button class="btn" type="submit">Tambah Laporan</button>
+              </span>
+              <a class="btn btn-outline" href="#/">Batal</a>
+            </div>
+          </form>
+        </div>
+      </section>
+    `;
   }
 
   async afterRender() {
@@ -182,7 +175,6 @@ export default class AddPage {
 
     this.#map.addMapEventListener("click", (event) => {
       draggableMarker.setLatLng(event.latlng);
-
       event.sourceTarget.flyTo(event.latlng);
     });
   }

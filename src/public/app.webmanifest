@@ -1,0 +1,60 @@
+{
+  "id": "/#/",
+  "start_url": "/#/",
+  "scope": "/",
+  "name": "Story Web App",
+  "short_name": "Story App",
+  "description": "Aplikasi sosial media khusus untuk murid dicoding",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#C599B6",
+  "icons": [
+    {
+      "src": "images/logo.png",
+      "type": "image/png",
+      "sizes": "144x144",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "images/screenshots/story-app-home",
+      "sizes": "1920x1043",
+      "type": "image/png",
+      "from_factor": "wide"
+    },
+    {
+      "src": "images/screenshots/story-app-new",
+      "sizes": "1920x1043",
+      "type": "image/png",
+      "from_factor": "wide"
+    },
+    {
+      "src": "images/screenshots/story-app-home(mobile)",
+      "sizes": "1080x2280",
+      "type": "image/png",
+      "from_factor": "narrow"
+    },
+    {
+      "src": "images/screenshots/story-app-new(mobile)",
+      "sizes": "1080x2280",
+      "type": "image/png",
+      "from_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Story Baru",
+      "short_name": "Baru",
+      "description": "Membuat story baru.",
+      "url": "/?source=pwa#/new",
+      "icons": [
+        {
+          "src": "images/icons/add-x512.png",
+          "type": "image/png",
+          "sizes": "512x512"
+        }
+      ]
+    }
+  ]
+}

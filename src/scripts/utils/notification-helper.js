@@ -16,7 +16,12 @@ export function isNotificationGranted() {
 
 export async function requestNotificationPermission() {
   if (!isNotificationAvailable()) {
-    console.error("Notification API unsupported.");
+    console.error("Notification API tidak didukung di browser ini.");
+    await Swal.fire({
+      icon: "error",
+      title: "Browser Anda tidak mendukung notifikasi.",
+      confirmButtonText: "Oke",
+    });
     return false;
   }
 
@@ -24,46 +29,63 @@ export async function requestNotificationPermission() {
     return true;
   }
 
-  const status = await Notification.requestPermission();
+  try {
+    const status = await Notification.requestPermission();
 
-  if (status === "denied") {
+    if (status === "denied") {
+      await Swal.fire({
+        icon: "error",
+        title: "Notifikasi ditolak.",
+        text: "Mohon izinkan notifikasi di pengaturan browser Anda.",
+        confirmButtonText: "Oke",
+      });
+      return false;
+    }
+
+    if (status === "default") {
+      await Swal.fire({
+        icon: "error",
+        title: "Notifikasi ditutup atau ditolak.",
+        confirmButtonText: "Oke",
+      });
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error saat meminta izin notifikasi:", error);
     await Swal.fire({
       icon: "error",
-      title: "Notifikasi ditolak.",
-      confirmButtonText: "Okee",
-    });
-    return false;
-  }
-
-  if (status === "default") {
-    await Swal.fire({
-      icon: "error",
-      title: "Notifikasi ditutup atau ditolak.",
+      title: "Terjadi kesalahan saat meminta izin notifikasi.",
       confirmButtonText: "Oke",
     });
     return false;
   }
-
-  return true;
 }
 
 export async function getPushSubscription() {
   if (!("serviceWorker" in navigator)) {
-    console.error("Service tidak tersedia.");
-    return null;
-  }
-  const registration = await navigator.serviceWorker.getRegistration();
-  if (!registration) {
-    console.error("Service Worker tidak terdaftar.");
+    console.error("Service Worker tidak tersedia.");
     return null;
   }
 
-  if (!registration.pushManager) {
-    console.error("PushManager tidak tersedia.");
+  try {
+    const registration = await navigator.serviceWorker.ready;
+    if (!registration) {
+      console.error("Service Worker tidak terdaftar.");
+      return null;
+    }
+
+    if (!registration.pushManager) {
+      console.error("PushManager tidak tersedia.");
+      return null;
+    }
+
+    return await registration.pushManager.getSubscription();
+  } catch (error) {
+    console.error("Error saat mendapatkan subscription:", error);
     return null;
   }
-
-  return await registration.pushManager.getSubscription();
 }
 
 export async function isCurrentPushSubscriptionAvailable() {
@@ -86,7 +108,7 @@ export async function subscribe() {
     await Swal.fire({
       icon: "info",
       title: "Sudah berlangganan.",
-      confirmButtonText: "Okee",
+      confirmButtonText: "Oke",
     });
     return;
   }
@@ -99,13 +121,16 @@ export async function subscribe() {
   let pushSubscription;
 
   try {
-    const registration = await navigator.serviceWorker.getRegistration();
+    // Pastikan Service Worker siap
+    const registration = await navigator.serviceWorker.ready;
+
     pushSubscription = await registration.pushManager.subscribe(
       generateSubscribeOptions()
     );
 
     const { endpoint, keys } = pushSubscription.toJSON();
-    console.log({ endpoint, keys });
+    console.log("Subscription info:", { endpoint, keys });
+
     const response = await subscribePushNotification({ endpoint, keys });
 
     if (!response.ok) {
@@ -113,11 +138,11 @@ export async function subscribe() {
       await Swal.fire({
         icon: "error",
         title: failureSubscribeMessage,
+        text: "Terjadi kesalahan saat berkomunikasi dengan server.",
         confirmButtonText: "Oke",
       });
 
       await pushSubscription.unsubscribe();
-
       return;
     }
 
@@ -131,15 +156,20 @@ export async function subscribe() {
     await Swal.fire({
       icon: "error",
       title: failureSubscribeMessage,
+      text: error.message,
       confirmButtonText: "Oke",
     });
-    await pushSubscription.unsubscribe();
+
+    if (pushSubscription) {
+      await pushSubscription.unsubscribe();
+    }
   }
 }
 
 export async function unsubscribe() {
   const failureUnsubscribeMessage = "Langganan gagal dinonaktifkan.";
   const successUnsubscribeMessage = "Langganan berhasil dinonaktifkan.";
+
   try {
     const pushSubscription = await getPushSubscription();
     if (!pushSubscription) {
@@ -151,17 +181,21 @@ export async function unsubscribe() {
       });
       return;
     }
+
     const { endpoint, keys } = pushSubscription.toJSON();
     const response = await unsubscribePushNotification({ endpoint });
+
     if (!response.ok) {
       await Swal.fire({
         icon: "error",
-        title: unsubscribePushNotification(),
+        title: failureUnsubscribeMessage,
+        text: "Terjadi kesalahan saat berkomunikasi dengan server.",
         confirmButtonText: "Oke",
       });
       console.error("unsubscribe: response:", response);
       return;
     }
+
     const unsubscribed = await pushSubscription.unsubscribe();
     if (!unsubscribed) {
       await Swal.fire({
@@ -182,6 +216,7 @@ export async function unsubscribe() {
     await Swal.fire({
       icon: "error",
       title: failureUnsubscribeMessage,
+      text: error.message,
       confirmButtonText: "Oke",
     });
     console.error("unsubscribe: error:", error);

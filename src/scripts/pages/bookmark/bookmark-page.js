@@ -1,5 +1,3 @@
-// File: src/scripts/pages/bookmark/bookmark-page.js
-
 import {
   generateLoaderAbsoluteTemplate,
   generateStoriesListEmptyTemplate,

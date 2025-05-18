@@ -1,5 +1,3 @@
-// File: src/scripts/pages/detail/detail-page.js
-
 import DetailPresenter from "./detail-presenter";
 import { parseActivePathname } from "../../routes/url-parser";
 import * as StoriesAPI from "../../data/api";
@@ -12,12 +10,11 @@ import {
 } from "../../template";
 import Map from "../../utils/map";
 import Swal from "sweetalert2";
-import Database from "../../data/database"; // Import Database untuk menyimpan story dan location
-
+import Database from "../../data/database";
 export default class DetailPage {
   #presenter = null;
   #map = null;
-  #story = null; // Menyimpan data cerita
+  #story = null;
 
   async render() {
     return `
@@ -50,13 +47,11 @@ export default class DetailPage {
         location: story.location,
       });
 
-    // Menambahkan tombol Simpan Story dan Simpan Lokasi
     document.getElementById("save-actions-container").innerHTML = `
       ${generateSaveStoryButtonTemplate()}
       ${generateSaveLocationButtonTemplate()}
     `;
 
-    // Fungsi untuk menyimpan cerita
     document
       .getElementById("story-detail-save")
       .addEventListener("click", async () => {
@@ -77,7 +72,6 @@ export default class DetailPage {
         }
       });
 
-    // Fungsi untuk menyimpan lokasi
     document
       .getElementById("story-detail-save-location")
       .addEventListener("click", async () => {

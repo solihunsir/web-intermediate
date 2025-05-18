@@ -1,5 +1,3 @@
-// File: src/scripts/data/database.js
-
 import { openDB } from "idb";
 
 const DATABASE_NAME = "storyApp";
@@ -39,7 +37,6 @@ const Database = {
     return (await dbPromise).delete(OBJECT_STORE_NAME, id);
   },
 
-  // Fungsi untuk mendapatkan lokasi yang tersimpan
   async getSavedLocations() {
     const allStories = await this.getAllStories();
     return allStories

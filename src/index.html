@@ -1,9 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="favicon.png" />
+    <meta
+      name="description"
+      content="Aplikasi untuk menyimpan cerita dan lokasi dengan fitur PWA"
+    />
+    <meta name="theme-color" content="#2196F3" />
+    <link rel="shortcut icon" href="/assets/icons/icon-72x72.png" />
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192x192.png" />
 
     <title>Story App</title>
     <link
@@ -13,7 +19,21 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href="app.webmanifest" />
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/assets/icons/icon-192x192.png" as="image" />
+
+    <!-- Security headers -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; 
+                   script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; 
+                   style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; 
+                   img-src 'self' data: https: blob:; 
+                   connect-src 'self' https:; 
+                   font-src 'self' https://cdnjs.cloudflare.com;"
+    />
   </head>
   <body>
     <header>
@@ -28,10 +48,31 @@
           <ul id="nav-list" class="nav-list"></ul>
         </nav>
 
-        <button id="drawer-button" class="drawer-button">☰</button>
+        <button
+          id="drawer-button"
+          class="drawer-button"
+          aria-label="Buka menu navigasi"
+        >
+          ☰
+        </button>
       </div>
     </header>
 
     <main tabIndex="-1" id="main-content" class="main-content"></main>
+
+    <!-- Loading indicator untuk PWA -->
+    <div
+      id="app-loading"
+      style="
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+      "
+    >
+      <div class="loader"></div>
+    </div>
   </body>
 </html>

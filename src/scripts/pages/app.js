@@ -17,21 +17,6 @@ import {
   subscribe,
   unsubscribe,
 } from "../utils/notification-helper";
-// File: src/scripts/app.js
-
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    // Mendaftar Service Worker
-    navigator.serviceWorker
-      .register("/service-worker.js")
-      .then((registration) => {
-        console.log("Service Worker terdaftar dengan sukses:", registration);
-      })
-      .catch((error) => {
-        console.log("Service Worker gagal didaftarkan:", error);
-      });
-  });
-}
 
 class App {
   #content = null;
@@ -51,6 +36,135 @@ class App {
   #init() {
     setupSkipToContent(this.#skipLinkButton, this.#content);
     this.#setupDrawer();
+    this.#registerServiceWorker();
+    this.#setupPWAInstallPrompt();
+  }
+
+  #registerServiceWorker() {
+    if (!isServiceWorkerAvailable()) {
+      console.log("Service Worker tidak didukung di browser ini.");
+      return;
+    }
+
+    window.addEventListener("load", async () => {
+      try {
+        const registration = await navigator.serviceWorker.register(
+          "/service-worker.js",
+          {
+            scope: "/",
+          }
+        );
+
+        console.log("Service Worker berhasil didaftarkan:", registration);
+
+        // Handle service worker updates
+        registration.addEventListener("updatefound", () => {
+          const newWorker = registration.installing;
+          console.log("Service Worker update ditemukan");
+
+          newWorker.addEventListener("statechange", () => {
+            switch (newWorker.state) {
+              case "installed":
+                if (navigator.serviceWorker.controller) {
+                  console.log(
+                    "Service Worker baru telah diinstall. Refresh halaman untuk menggunakan versi terbaru."
+                  );
+                  // Optional: Show notification to user about update
+                  this.#showUpdateAvailable();
+                } else {
+                  console.log("Service Worker siap untuk offline mode");
+                }
+                break;
+              case "redundant":
+                console.error("Service Worker menjadi redundant");
+                break;
+            }
+          });
+        });
+
+        // Check for waiting service worker
+        if (registration.waiting) {
+          this.#showUpdateAvailable();
+        }
+      } catch (error) {
+        console.error("Pendaftaran Service Worker gagal:", error);
+      }
+    });
+  }
+
+  #showUpdateAvailable() {
+    // Optional: Implement UI to notify user about updates
+    console.log(
+      "Update tersedia, refresh halaman untuk mendapatkan versi terbaru"
+    );
+  }
+
+  #setupPWAInstallPrompt() {
+    let deferredPrompt;
+
+    window.addEventListener("beforeinstallprompt", (event) => {
+      // Prevent the mini-infobar from appearing on mobile
+      event.preventDefault();
+
+      // Save the event so it can be triggered later
+      deferredPrompt = event;
+
+      // Show install button if needed
+      this.#showInstallButton(deferredPrompt);
+    });
+
+    window.addEventListener("appinstalled", (event) => {
+      console.log("PWA berhasil diinstall");
+      // Hide install button
+      this.#hideInstallButton();
+    });
+  }
+
+  #showInstallButton(deferredPrompt) {
+    // Create install button if it doesn't exist
+    let installButton = document.getElementById("pwa-install-button");
+
+    if (!installButton) {
+      installButton = document.createElement("button");
+      installButton.id = "pwa-install-button";
+      installButton.className = "btn install-button";
+      installButton.innerHTML = '<i class="fas fa-download"></i> Install App';
+      installButton.style.display = "none";
+
+      // Add to navigation
+      const navList = document.getElementById("nav-list");
+      if (navList) {
+        const li = document.createElement("li");
+        li.appendChild(installButton);
+        navList.insertBefore(li, navList.firstChild);
+      }
+    }
+
+    installButton.style.display = "block";
+
+    installButton.addEventListener("click", async () => {
+      // Hide the button
+      installButton.style.display = "none";
+
+      // Show the install prompt
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+
+        // Wait for the user to respond to the prompt
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to install prompt: ${outcome}`);
+
+        // Clear the deferredPrompt variable
+        deferredPrompt = null;
+      }
+    });
+  }
+
+  #hideInstallButton() {
+    const installButton = document.getElementById("pwa-install-button");
+    if (installButton) {
+      installButton.style.display = "none";
+    }
   }
 
   #setupDrawer() {
@@ -91,7 +205,6 @@ class App {
 
       if (confirm("Apakah anda yakin ingin keluar?")) {
         getLogout();
-
         location.hash = "/login";
       }
     });
@@ -101,29 +214,40 @@ class App {
     const pushNotificationTools = document.getElementById(
       "push-notification-tools"
     );
-    const isSubscribed = await isCurrentPushSubscriptionAvailable();
 
-    if (isSubscribed) {
-      pushNotificationTools.innerHTML = generateUnsubscribeButtonTemplate();
-      document
-        .getElementById("unsubscribe-button")
-        .addEventListener("click", () => {
-          unsubscribe().finally(() => {
-            this.#setupPushNotification();
-          });
-        });
-
+    if (!pushNotificationTools) {
+      console.error("Element push-notification-tools tidak ditemukan.");
       return;
     }
 
-    pushNotificationTools.innerHTML = generateSubscribeButtonTemplate();
-    document
-      .getElementById("subscribe-button")
-      .addEventListener("click", () => {
-        subscribe().finally(() => {
-          this.#setupPushNotification();
+    try {
+      const isSubscribed = await isCurrentPushSubscriptionAvailable();
+
+      if (isSubscribed) {
+        pushNotificationTools.innerHTML = generateUnsubscribeButtonTemplate();
+        const unsubscribeButton = document.getElementById("unsubscribe-button");
+
+        if (unsubscribeButton) {
+          unsubscribeButton.addEventListener("click", async () => {
+            await unsubscribe();
+            await this.#setupPushNotification();
+          });
+        }
+        return;
+      }
+
+      pushNotificationTools.innerHTML = generateSubscribeButtonTemplate();
+      const subscribeButton = document.getElementById("subscribe-button");
+
+      if (subscribeButton) {
+        subscribeButton.addEventListener("click", async () => {
+          await subscribe();
+          await this.#setupPushNotification();
         });
-      });
+      }
+    } catch (error) {
+      console.error("Error saat setup push notification:", error);
+    }
   }
 
   async renderPage() {

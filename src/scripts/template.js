@@ -1,5 +1,3 @@
-// File: src/scripts/template.js
-
 import { showFormattedDate } from "./utils";
 
 export function generateLoaderTemplate() {
@@ -216,7 +214,6 @@ export function generateRemoveStoryButtonTemplate() {
     </button>
   `;
 }
-// File: src/scripts/template.js
 
 export function generateLocationItemTemplate(location, index) {
   return `
