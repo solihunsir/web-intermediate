@@ -1,13 +1,15 @@
 export default class NotFound {
-  async render() {
-    return `
+    async render() {
+        return `
             <section class="not-found">
                 <h2>404 - Not Found</h2>
-                <p>Silahkan kembali ke Home</p>
+                <p>Waduch Nyasar Kamu cik! Silahkan kembali ke home yaaa.</p>
                 <a href="#/" class="btn">Kembali ke Home</a>
             </section>
         `;
-  }
+    }
 
-  async afterRender() {}
+    async afterRender() {
+        // Sengaja kosong biar ga error aja di console
+    }
 }

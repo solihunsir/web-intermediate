@@ -1,43 +1,23 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Aplikasi untuk menyimpan cerita dan lokasi dengan fitur PWA"
-    />
-    <meta name="theme-color" content="#2196F3" />
-    <link rel="shortcut icon" href="/assets/icons/icon-72x72.png" />
-    <link rel="apple-touch-icon" href="/assets/icons/icon-192x192.png" />
+    <link rel="shortcut icon" href="favicon.png">
+    <link rel="manifest" href="app.webmanifest" />
 
     <title>Story App</title>
     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-      integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <link rel="manifest" href="app.webmanifest" />
-
-    <!-- Preload critical resources -->
-    <link rel="preload" href="/assets/icons/icon-192x192.png" as="image" />
-
-    <!-- Security headers -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; 
-                   script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; 
-                   style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; 
-                   img-src 'self' data: https: blob:; 
-                   connect-src 'self' https:; 
-                   font-src 'self' https://cdnjs.cloudflare.com;"
+       rel="stylesheet"
+       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+       integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+       crossorigin="anonymous"
+       referrerpolicy="no-referrer"
     />
   </head>
   <body>
     <header>
-      <button id="skip-link" class="skip-link">Konten Utama</button>
+      <button id="skip-link" class="skip-link">Menuju Konten Utama</button>
 
       <div class="main-header container">
         <a class="brand-name__link" href="#/">
@@ -48,31 +28,10 @@
           <ul id="nav-list" class="nav-list"></ul>
         </nav>
 
-        <button
-          id="drawer-button"
-          class="drawer-button"
-          aria-label="Buka menu navigasi"
-        >
-          ☰
-        </button>
+        <button id="drawer-button" class="drawer-button">☰</button>
       </div>
     </header>
 
     <main tabIndex="-1" id="main-content" class="main-content"></main>
-
-    <!-- Loading indicator untuk PWA -->
-    <div
-      id="app-loading"
-      style="
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 9999;
-      "
-    >
-      <div class="loader"></div>
-    </div>
   </body>
 </html>

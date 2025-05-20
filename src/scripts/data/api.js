@@ -1,5 +1,5 @@
-import CONFIG from "../config";
-import { getAccessToken } from "../utils/auth";
+import CONFIG from '../config';
+import {getAccessToken} from "../utils/auth";
 
 const ENDPOINTS = {
   REGISTER: `${CONFIG.BASE_URL}/register`,
@@ -15,8 +15,8 @@ export async function getRegistered({ name, email, password }) {
   const data = JSON.stringify({ name, email, password });
 
   const fetchResponse = await fetch(ENDPOINTS.REGISTER, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: data,
   });
   const json = await fetchResponse.json();
@@ -31,16 +31,16 @@ export async function getLogin({ email, password }) {
   const data = JSON.stringify({ email, password });
 
   const fetchResponse = await fetch(ENDPOINTS.LOGIN, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: data,
-  });
+  })
   const json = await fetchResponse.json();
 
   return {
     ...json,
     ok: fetchResponse.ok,
-  };
+  }
 }
 
 export async function getAllStories() {
@@ -54,49 +54,51 @@ export async function getAllStories() {
   return {
     ...json,
     ok: fetchResponse.ok,
-  };
+  }
 }
 
 export async function getStoryById(id) {
   const accessToken = getAccessToken();
   const fetchResponse = await fetch(ENDPOINTS.DETAIL_STORY(id), {
-    method: "GET",
+    method: 'GET',
     headers: { Authorization: `Bearer ${accessToken}` },
-  });
+  })
   const json = await fetchResponse.json();
 
   return {
     ...json,
     ok: fetchResponse.ok,
-  };
+  }
 }
 
-export async function addStory({ description, image, latitude, longitude }) {
+export async function addStory({
+    description,
+    image,
+    latitude,
+    longitude,
+}) {
   const accessToken = getAccessToken();
 
   const formData = new FormData();
-  formData.append("photo", image);
-  formData.set("description", description);
-  formData.set("lat", latitude);
-  formData.set("lon", longitude);
+  formData.append('photo', image);
+  formData.set('description', description);
+  formData.set('lat', latitude);
+  formData.set('lon', longitude);
 
   const fetchResponse = await fetch(ENDPOINTS.ADD_STORY, {
-    method: "POST",
+    method: 'POST',
     headers: { Authorization: `Bearer ${accessToken}` },
     body: formData,
-  });
+  })
   const json = await fetchResponse.json();
 
   return {
     ...json,
     ok: fetchResponse.ok,
-  };
+  }
 }
 
-export async function subscribePushNotification({
-  endpoint,
-  keys: { p256dh, auth },
-}) {
+export async function subscribePushNotification({ endpoint, keys: { p256dh, auth }}) {
   const accessToken = getAccessToken();
   const data = JSON.stringify({
     endpoint,
@@ -104,10 +106,10 @@ export async function subscribePushNotification({
   });
 
   const fetchResponse = await fetch(ENDPOINTS.SUBSCRIBE, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`
     },
     body: data,
   });
@@ -117,7 +119,7 @@ export async function subscribePushNotification({
   return {
     ...json,
     ok: fetchResponse.ok,
-  };
+  }
 }
 
 export async function unsubscribePushNotification({ endpoint }) {
@@ -125,10 +127,10 @@ export async function unsubscribePushNotification({ endpoint }) {
   const data = JSON.stringify({ endpoint });
 
   const fetchResponse = await fetch(ENDPOINTS.UNSUBSCRIBE, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`
     },
     body: data,
   });
@@ -138,5 +140,5 @@ export async function unsubscribePushNotification({ endpoint }) {
   return {
     ...json,
     ok: fetchResponse.ok,
-  };
+  }
 }

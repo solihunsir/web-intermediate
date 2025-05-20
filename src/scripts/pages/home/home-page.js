@@ -4,7 +4,7 @@ import {
   generateLoaderAbsoluteTemplate,
   generateStoriesListEmptyTemplate,
   generateStoriesListErrorTemplate,
-  generateStoryItemTemplate,
+  generateStoryItemTemplate
 } from "../../template";
 
 export default class HomePage {
@@ -13,7 +13,7 @@ export default class HomePage {
   async render() {
     return `
       <section class="container">
-        <h1 class="section-title">Story</h1>
+        <h1 class="section-title">List Story</h1>
         
         <div class="stories-list__container">
             <div id="stories-list"></div>
@@ -24,6 +24,7 @@ export default class HomePage {
   }
 
   async afterRender() {
+    // Do your job here
     this.#presenter = new HomePresenter({
       view: this,
       model: StoriesAPI,
@@ -42,43 +43,40 @@ export default class HomePage {
       const coordinate = {
         latitude: story.lat,
         longitude: story.lon,
-      };
+      }
 
       console.log(coordinate);
 
       return acc.concat(
-        generateStoryItemTemplate({
-          id: story.id,
-          name: story.name,
-          description: story.description,
-          photoUrl: story.photoUrl,
-          createdAt: story.createdAt,
-          location: { latitude: story.lat, longitude: story.lon },
-        })
+          generateStoryItemTemplate({
+            id: story.id,
+            name: story.name,
+            description: story.description,
+            photoUrl: story.photoUrl,
+            createdAt: story.createdAt,
+            location: { latitude: story.lat, longitude: story.lon },
+          })
       );
-    }, "");
+    }, '')
 
-    document.getElementById("stories-list").innerHTML = `
+    document.getElementById('stories-list').innerHTML = `
       <div class="stories-list">${html}</div>
     `;
   }
 
   populateStoriesListEmpty() {
-    document.getElementById("stories-list").innerHTML =
-      generateStoriesListEmptyTemplate();
+    document.getElementById('stories-list').innerHTML = generateStoriesListEmptyTemplate();
   }
 
   populateStoriesListError(message) {
-    document.getElementById("stories-list").innerHTML =
-      generateStoriesListErrorTemplate(message);
+    document.getElementById('stories-list').innerHTML = generateStoriesListErrorTemplate(message);
   }
 
   showLoading() {
-    document.getElementById("stories-list-loading-container").innerHTML =
-      generateLoaderAbsoluteTemplate();
+    document.getElementById('stories-list-loading-container').innerHTML = generateLoaderAbsoluteTemplate();
   }
 
   hideLoading() {
-    document.getElementById("stories-list-loading-container").innerHTML = "";
+    document.getElementById('stories-list-loading-container').innerHTML = '';
   }
 }

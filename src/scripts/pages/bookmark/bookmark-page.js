@@ -1,81 +1,80 @@
 import {
-  generateLoaderAbsoluteTemplate,
-  generateStoriesListEmptyTemplate,
-  generateStoriesListErrorTemplate,
-  generateStoryItemTemplate,
+    generateLoaderAbsoluteTemplate,
+    generateStoriesListEmptyTemplate,
+    generateStoriesListErrorTemplate, generateStoryItemTemplate
 } from "../../template";
 import BookmarkPresenter from "./bookmark-presenter";
 import Database from "../../data/database";
 
 export default class BookmarkPage {
-  #presenter;
+    #presenter;
 
-  async render() {
-    return `
-      <section class="container">
-        <h1 class="section-title">Story Tersimpan</h1>
-        <div class="stories-list__container">
-          <div id="stories-list"></div>
-          <div id="stories-list-loading-container"></div>
-        </div>
-      </section>
-    `;
-  }
-
-  async afterRender() {
-    this.#presenter = new BookmarkPresenter({
-      view: this,
-      model: Database,
-    });
-
-    await this.#presenter.initialBookmarkStories();
-  }
-
-  populateBookmarkStories(message, listStory) {
-    if (listStory.length <= 0) {
-      this.populateBookmarkedStoriesListEmpty();
-      return;
+    async render() {
+        return `
+            <section class="container">
+                <h1 class="section-title">List Story yang Tersimpan</h1>
+         
+                <div class="stories-list__container">
+                  <div id="stories-list"></div>
+                  <div id="stories-list-loading-container"></div>
+                </div>
+            </section>
+        `;
     }
 
-    const html = listStory.reduce((acc, story) => {
-      const coordinate = {
-        latitude: story.lat,
-        longitude: story.lon,
-      };
+    async afterRender() {
+        this.#presenter = new BookmarkPresenter({
+            view: this,
+            model: Database
+        });
 
-      return acc.concat(
-        generateStoryItemTemplate({
-          id: story.id,
-          name: story.name,
-          description: story.description,
-          photoUrl: story.photoUrl,
-          createdAt: story.createdAt,
-          location: { latitude: story.lat, longitude: story.lon },
-        })
-      );
-    }, "");
+        await this.#presenter.initialBookmarkStories();
+    }
 
-    document.getElementById("stories-list").innerHTML = `
-      <div class="stories-list">${html}</div>
-    `;
-  }
+    populateBookmarkStories(message, listStory) {
+        if (listStory.length <= 0) {
+            this.populateBookmarkedStoriesListEmpty();
+            return;
+        }
 
-  populateBookmarkedStoriesListEmpty() {
-    document.getElementById("stories-list").innerHTML =
-      generateStoriesListEmptyTemplate();
-  }
+        const html = listStory.reduce((acc, story) => {
+            const coordinate = {
+                latitude: story.lat,
+                longitude: story.lon,
+            }
 
-  populateBookmarkedStoriesError(message) {
-    document.getElementById("stories-list").innerHTML =
-      generateStoriesListErrorTemplate(message);
-  }
+            console.log(coordinate);
 
-  showStoriesListLoading() {
-    document.getElementById("stories-list-loading-container").innerHTML =
-      generateLoaderAbsoluteTemplate();
-  }
+            return acc.concat(
+                generateStoryItemTemplate({
+                    id: story.id,
+                    name: story.name,
+                    description: story.description,
+                    photoUrl: story.photoUrl,
+                    createdAt: story.createdAt,
+                    location: { latitude: story.lat, longitude: story.lon },
+                })
+            );
+        }, '');
 
-  hideStoreListLoading() {
-    document.getElementById("stories-list-loading-container").innerHTML = "";
-  }
+        document.getElementById('stories-list').innerHTML = `
+          <div class="stories-list">${html}</div>
+        `;
+    }
+
+    populateBookmarkedStoriesListEmpty() {
+        document.getElementById('stories-list').innerHTML = generateStoriesListEmptyTemplate();
+    }
+
+    populateBookmarkedStoriesError(message) {
+        document.getElementById('stories-list').innerHTML = generateStoriesListErrorTemplate(message);
+    }
+
+    showStoriesListLoading() {
+        document.getElementById('stories-list-loading-container').innerHTML = generateLoaderAbsoluteTemplate();
+    }
+
+    hideStoreListLoading() {
+        document.getElementById('stories-list-loading-container').innerHTML = '';
+    }
 }
