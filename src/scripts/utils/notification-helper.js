@@ -121,9 +121,7 @@ export async function subscribe() {
       title: failureSubscribeMessage,
       confirmButtonText: "Oke",
     });
-    if (pushSubscription) {
-      await pushSubscription.unsubscribe();
-    }
+    await pushSubscription.unsubscribe();
   }
 }
 
@@ -148,7 +146,7 @@ export async function unsubscribe() {
     if (!response.ok) {
       await Swal.fire({
         icon: "error",
-        title: failureUnsubscribeMessage,
+        title: unsubscribePushNotification(),
         confirmButtonText: "Oke",
       });
       console.error("unsubscribe: response:", response);

@@ -93,17 +93,14 @@ export async function addStory({ description, image, latitude, longitude }) {
   };
 }
 
-// Memperbaiki subscription push notification
-export async function subscribePushNotification(subscription) {
+export async function subscribePushNotification({
+  endpoint,
+  keys: { p256dh, auth },
+}) {
   const accessToken = getAccessToken();
-
-  // Pastikan data yang dikirim sudah benar (endpoint dan keys)
   const data = JSON.stringify({
-    endpoint: subscription.endpoint,
-    keys: {
-      p256dh: subscription.keys.p256dh, // Public key
-      auth: subscription.keys.auth, // Authentication secret
-    },
+    endpoint,
+    keys: { p256dh, auth },
   });
 
   const fetchResponse = await fetch(ENDPOINTS.SUBSCRIBE, {
